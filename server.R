@@ -56,7 +56,8 @@ shinyServer(function(input, output) {
 
   # render histogram if the slider input value exists
   # NOTE: this will only appear if user is authenticated because the slider will only exist and have a value
-  #   if the user is authenticated
+  #   if the user is authenticated (and the function "req()" in this code tells Shiny that this output item
+  #   should not be created until "input$obs" exists)
   output$distPlot <- renderPlot({
     req(input$obs)
     hist(rnorm(input$obs), breaks = 100, main = paste("Your password:", input$password))
