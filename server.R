@@ -7,7 +7,7 @@ credentials <- data.frame(user = "test", pw = "380796939c86c55d6aa8ea8c941f7652"
 
 shinyServer(function(input, output) {
   # reactive value containing user's authentication status
-  user_input <- reactiveValues(authenticated = FALSE)
+  user_input <- reactiveValues(authenticated = FALSE, status = "")
   
   # password entry UI if not authenticated
   output$uiLogin <- renderUI({
@@ -18,31 +18,38 @@ shinyServer(function(input, output) {
         passwordInput("password", "Password:"),
 
         actionButton("login_button", "Log in")
-        )
+      )
     }
   })
   
   # authenticate user by checking whether their user name and password are in the credentials data frame and 
   #   on the same row
-  output$pass <- renderText({
-    req(input$login_button)
-    
-    if (input$login_button > 0) {
-      if (user_input$authenticated == FALSE) {  
+  # if not authenticated, determine whether the user name or the password is bad (username precedent over pw)
+  observeEvent(input$login_button, {
           row.username <- isolate(which(credentials$user == input$user_name))
           row.password <- isolate(which(credentials$pw == digest(input$password))) # digest() makes md5 hash of password
           
-          if (length(row.username) > 0 && 
-              length(row.password) > 0 &&
+          if (length(row.username) == 1 && 
+              length(row.password) == 1 &&
               (row.username == row.password)) {
                 user_input$authenticated <- TRUE
-          } else  {
-            "User name or password failed!"
+          } else if (input$user_name == "" || length(row.username) == 0) {
+            user_input$status <- "bad_user"
+          } else if (input$password == "" || length(row.password) == 0) {
+            user_input$status <- "bad_password"
           }
-      }
+  })  
+  
+  output$pass <- renderUI({
+    if (user_input$authenticated == TRUE) {
+      return()
+    } else if (user_input$status == "bad_user") {
+      h5(strong("User name not found!", style = "color:red"), align = "center")
+    } else if (user_input$status == "bad_password") {
+      h5(strong("Incorrect password!", style = "color:red"), align = "center")
     }
-  })
-    
+  })  
+
   # show slider input widget if user is authenticated
   observe({
     if (user_input$authenticated == TRUE) {
