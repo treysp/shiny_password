@@ -1,21 +1,16 @@
-shinyUI(bootstrapPage(
-  # Custom CSS
-  tagList(
-    tags$head(
-      tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-    )
-  ),
-  
-  # Login interface
-  div(class = "login",
+shinyUI(fluidPage(
+  # Centered login interface
+  fluidRow(
+    column(width = 2, offset = 5,
+      br(), br(), br(), br(),
       uiOutput("uiLogin"),
-      textOutput("pass")
-  ), 
+      uiOutput("pass")
+    ), 
   
   # Slider input
-  div(class = "span4", uiOutput("obs")),
-  
+  uiOutput("obs"),
+
   # Histogram output
-  div(class = "span8", plotOutput("distPlot"))
-  
+  plotOutput("distPlot")
+  )
 ))
