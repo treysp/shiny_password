@@ -8,10 +8,34 @@ credentials <- data.frame(user = "test", pw = "380796939c86c55d6aa8ea8c941f7652"
 shinyServer(function(input, output) {
   # reactive value containing user's authentication status
   user_input <- reactiveValues(authenticated = FALSE, status = "")
+
+  output$ui_general <- renderUI({
+    if (user_input$authenticated == FALSE) {
+      # Centered login interface
+      fluidPage(
+        fluidRow(
+          column(width = 2, offset = 5,
+            br(), br(), br(), br(),
+            uiOutput("uiLogin"),
+            uiOutput("pass")
+          )
+        )
+      )
+    } else {
+      fluidPage(
+        fluidRow(
+          # Slider input
+          uiOutput("obs"),
   
+          # Histogram output
+          plotOutput("distPlot")
+        )
+      )
+    }
+  })
+    
   # password entry UI if not authenticated
   output$uiLogin <- renderUI({
-    if (user_input$authenticated == FALSE) {
       wellPanel(
         textInput("user_name", "User Name:"),
         
@@ -19,9 +43,16 @@ shinyServer(function(input, output) {
 
         actionButton("login_button", "Log in")
       )
-    }
   })
-  
+
+  output$pass <- renderUI({
+    if (user_input$status == "bad_user") {
+      h5(strong("User name not found!", style = "color:red"), align = "center")
+    } else if (user_input$status == "bad_password") {
+      h5(strong("Incorrect password!", style = "color:red"), align = "center")
+    }
+  })   
+    
   # authenticate user by checking whether their user name and password are in the credentials data frame and 
   #   on the same row
   # if not authenticated, determine whether the user name or the password is bad (username precedent over pw)
@@ -40,31 +71,14 @@ shinyServer(function(input, output) {
           }
   })  
   
-  output$pass <- renderUI({
-    if (user_input$authenticated == TRUE) {
-      return()
-    } else if (user_input$status == "bad_user") {
-      h5(strong("User name not found!", style = "color:red"), align = "center")
-    } else if (user_input$status == "bad_password") {
-      h5(strong("Incorrect password!", style = "color:red"), align = "center")
-    }
-  })  
-
-  # show slider input widget if user is authenticated
-  observe({
-    if (user_input$authenticated == TRUE) {
-      output$obs <- renderUI({
-        sliderInput("obs", "Number of observations:", 
-                    min = 10000, max = 90000, 
-                    value = 50000, step = 10000)
-      })
-    }
+  # slider input widget if user is authenticated
+  output$obs <- renderUI({
+    sliderInput("obs", "Number of observations:", 
+                min = 10000, max = 90000, 
+                value = 50000, step = 10000)
   })
 
   # render histogram if the slider input value exists
-  # NOTE: this will only appear if user is authenticated because the slider will only exist and have a value
-  #   if the user is authenticated (and the function "req()" in this code tells Shiny that this output item
-  #   should not be created until "input$obs" exists)
   output$distPlot <- renderPlot({
     req(input$obs)
     hist(rnorm(input$obs), breaks = 100, main = paste("Your password:", input$password))
