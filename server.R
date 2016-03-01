@@ -7,37 +7,7 @@ credentials <- data.frame(user = "test", pw = "380796939c86c55d6aa8ea8c941f7652"
                           stringsAsFactors = FALSE)
 
 shinyServer(function(input, output, session) {
-# USER AUTHENTICATION CALCULATIONS -------------------------------------------- 
-  # reactive value containing user's authentication status
-  user_input <- reactiveValues(authenticated = FALSE, status = "")
-
-  # authenticate user by checking whether their user name and password are in the credentials 
-  #   data frame and on the same row
-  # if not authenticated, determine whether the user name or the password is bad (username 
-  #   precedent over pw)
-  observeEvent(input$login_button, {
-    row.username <- which(credentials$user == input$user_name)
-    row.password <- which(credentials$pw == digest(input$password)) # digest() makes md5 hash of password
-    
-    if (length(row.username) == 1 && 
-        length(row.password) >= 1 &&
-        (row.username %in% row.password)) { # more than one user may have same pw
-      user_input$authenticated <- TRUE
-    } else {
-      user_input$authenticated <- FALSE
-    }
-    
-    if (user_input$authenticated == FALSE &
-        (input$user_name == "" || length(row.username) == 0)) {
-      user_input$status <- "bad_user"
-    } else if (user_input$authenticated == FALSE &
-               (input$password == "" || length(row.password) == 0)) {
-      user_input$status <- "bad_password"
-    }
-  })   
-
-# UI COMPONENTS --------------------------------------------------------------
-  # page layout
+#### UI code --------------------------------------------------------------
   output$ui_general <- renderUI({
     if (user_input$authenticated == FALSE) {
       # Centered login interface
@@ -67,30 +37,8 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-    
-  # password entry UI componenets (displayed if user --IS NOT-- authenticated)
-    # username and password text fields, login button
-    output$uiLogin <- renderUI({
-      wellPanel(
-        textInput("user_name", "User Name:"),
-        
-        passwordInput("password", "Password:"),
   
-        actionButton("login_button", "Log in")
-      )
-    })
-  
-    # red error message if bad credentials
-    output$pass <- renderUI({
-      if (user_input$status == "bad_user") {
-        h5(strong("User name not found!", style = "color:red"), align = "center")
-      } else if (user_input$status == "bad_password") {
-        h5(strong("Incorrect password!", style = "color:red"), align = "center")
-      } else {
-        ""
-      }
-    })   
-
+#### SERVER code -----------------------------------------------------------------------------
   # main UI components (displayed if user --IS-- authenticated)
     # slider input widget
     output$obs <- renderUI({
@@ -103,4 +51,56 @@ shinyServer(function(input, output, session) {
       req(input$obs)
       hist(rnorm(input$obs), main = "")
     })
+    
+#### PASSWORD MODULE ------------------------------------------------------------------------ 
+  # reactive value containing user's authentication status
+  user_input <- reactiveValues(authenticated = FALSE, status = "")
+
+  # authenticate user by checking whether their user name and password are in the credentials 
+  #   data frame and on the same row
+  # if not authenticated, determine whether the user name or the password is bad (username 
+  #   precedent over pw)
+  observeEvent(input$login_button, {
+    row.username <- which(credentials$user == input$user_name)
+    row.password <- which(credentials$pw == digest(input$password)) # digest() makes md5 hash of password
+    
+    if (length(row.username) == 1 && 
+        length(row.password) >= 1 &&
+        (row.username %in% row.password)) { # more than one user may have same pw
+      user_input$authenticated <- TRUE
+    } else {
+      user_input$authenticated <- FALSE
+    }
+    
+    if (user_input$authenticated == FALSE &
+        (input$user_name == "" || length(row.username) == 0)) {
+      user_input$status <- "bad_user"
+    } else if (user_input$authenticated == FALSE &
+               (input$password == "" || length(row.password) == 0)) {
+      user_input$status <- "bad_password"
+    }
+  })   
+
+  # password entry UI componenets (displayed if user is not authenticated)
+  # username and password text fields, login button
+  output$uiLogin <- renderUI({
+    wellPanel(
+      textInput("user_name", "User Name:"),
+      
+      passwordInput("password", "Password:"),
+
+      actionButton("login_button", "Log in")
+    )
+  })
+
+  # red error message if bad credentials
+  output$pass <- renderUI({
+    if (user_input$status == "bad_user") {
+      h5(strong("User name not found!", style = "color:red"), align = "center")
+    } else if (user_input$status == "bad_password") {
+      h5(strong("Incorrect password!", style = "color:red"), align = "center")
+    } else {
+      ""
+    }
+  })  
 })
