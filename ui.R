@@ -1,3 +1,3 @@
 shinyUI(
-  uiOutput("ui_general")
+  uiOutput("ui")
 )

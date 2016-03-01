@@ -8,7 +8,7 @@ credentials <- data.frame(user = "test", pw = "380796939c86c55d6aa8ea8c941f7652"
 
 shinyServer(function(input, output, session) {
 #### UI code --------------------------------------------------------------
-  output$ui_general <- renderUI({
+  output$ui <- renderUI({
     if (user_input$authenticated == FALSE) {
       # Centered login interface
       fluidPage(
