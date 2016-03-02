@@ -1,11 +1,3 @@
-library(shiny)
-library(digest)
-
-# credentials data frame for testing (username = "test" and password = "password")
-# NOTE: in real use this would open an existing data frame containing user credentials
-credentials <- data.frame(user = "test", pw = "380796939c86c55d6aa8ea8c941f7652", 
-                          stringsAsFactors = FALSE)
-
 shinyServer(function(input, output, session) {
 #### UI code --------------------------------------------------------------
   output$ui <- renderUI({
@@ -38,21 +30,20 @@ shinyServer(function(input, output, session) {
     }
   })
   
-#### SERVER code -----------------------------------------------------------------------------
-  # main UI components (displayed if user --IS-- authenticated)
-    # slider input widget
-    output$obs <- renderUI({
-      sliderInput("obs", "Number of observations:", 
-                  min = 1, max = 1000, value = 500)
-    })
-  
-    # render histogram once slider input value exists
-    output$distPlot <- renderPlot({
-      req(input$obs)
-      hist(rnorm(input$obs), main = "")
-    })
+#### NON-PASSWORD SERVER code -----------------------------------------------
+  # slider input widget
+  output$obs <- renderUI({
+    sliderInput("obs", "Number of observations:", 
+                min = 1, max = 1000, value = 500)
+  })
+
+  # render histogram once slider input value exists
+  output$distPlot <- renderPlot({
+    req(input$obs)
+    hist(rnorm(input$obs), main = "")
+  })
     
-#### PASSWORD MODULE ------------------------------------------------------------------------ 
+#### PASSWORD SERVER MODULE -------------------------------------------------- 
   # reactive value containing user's authentication status
   user_input <- reactiveValues(authenticated = FALSE, status = "")
 
@@ -72,12 +63,14 @@ shinyServer(function(input, output, session) {
       user_input$authenticated <- FALSE
     }
     
-    if (user_input$authenticated == FALSE &
-        (input$user_name == "" || length(row.username) == 0)) {
-      user_input$status <- "bad_user"
-    } else if (user_input$authenticated == FALSE &
-               (input$password == "" || length(row.password) == 0)) {
-      user_input$status <- "bad_password"
+    if (user_input$authenticated == FALSE) {
+      if (length(row.username) > 1) {
+        user_input$status <- "credentials_data_error"  
+      } else if (input$user_name == "" || length(row.username) == 0) {
+        user_input$status <- "bad_user"
+      } else if (input$password == "" || length(row.password) == 0) {
+        user_input$status <- "bad_password"
+      }
     }
   })   
 
@@ -95,7 +88,9 @@ shinyServer(function(input, output, session) {
 
   # red error message if bad credentials
   output$pass <- renderUI({
-    if (user_input$status == "bad_user") {
+    if (user_input$status == "credentials_data_error") {    
+      h5(strong("Credentials data error - contact administrator", style = "color:red"), align = "center")
+    } else if (user_input$status == "bad_user") {
       h5(strong("User name not found!", style = "color:red"), align = "center")
     } else if (user_input$status == "bad_password") {
       h5(strong("Incorrect password!", style = "color:red"), align = "center")
