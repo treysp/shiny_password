@@ -30,7 +30,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-#### NON-PASSWORD SERVER code -----------------------------------------------
+#### NON-PASSWORD server code -----------------------------------------------
   # slider input widget
   output$obs <- renderUI({
     sliderInput("obs", "Number of observations:", 
@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
     hist(rnorm(input$obs), main = "")
   })
     
-#### PASSWORD SERVER MODULE -------------------------------------------------- 
+#### PASSWORD server code --------------------------------------------------__ 
   # reactive value containing user's authentication status
   user_input <- reactiveValues(authenticated = FALSE, status = "")
 
@@ -89,7 +89,7 @@ shinyServer(function(input, output, session) {
   # red error message if bad credentials
   output$pass <- renderUI({
     if (user_input$status == "credentials_data_error") {    
-      h5(strong("Credentials data error - contact administrator", style = "color:red"), align = "center")
+      h5(strong("Credentials data error - contact administrator!", style = "color:red"), align = "center")
     } else if (user_input$status == "bad_user") {
       h5(strong("User name not found!", style = "color:red"), align = "center")
     } else if (user_input$status == "bad_password") {
