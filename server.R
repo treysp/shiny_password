@@ -48,10 +48,15 @@ shinyServer(function(input, output, session) {
   user_input <- reactiveValues(authenticated = FALSE, valid_credentials = FALSE, 
                                user_locked_out = FALSE, status = "")
 
-  # authenticate user by checking whether their user name and password are in the credentials 
-  #   data frame and on the same row
-  # if not authenticated, determine whether the user name or the password is bad (username 
-  #   precedent over pw)
+  # authenticate user by:
+  #   1. checking whether their user name and password are in the credentials 
+  #       data frame and on the same row (credentials are valid)
+  #   2. if credentials are valid, retrieve their lockout status from the data frame
+  #   3. if user has failed to login too many times and is not currently locked out, 
+  #       change locked out status to TRUE in credentials DF and save DF to file
+  #   4. if user is not authenticated, determine whether the user name or the password 
+  #       is bad (username precedent over pw) or he is locked out. set status value for
+  #       error message code below
   observeEvent(input$login_button, {
     row.username <- which(credentials$user == input$user_name)
     row.password <- which(credentials$pw == digest(input$password)) # digest() makes md5 hash of password
