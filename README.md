@@ -1,6 +1,7 @@
 #### **Shiny Password:** 
 ##### **A simple (and not particularly secure) method for managing user access permissions in Shiny apps**
 
+
 RStudio's product Shiny allows users to easily build interactive web applications backed by an R session. Shiny applications can be served to end users via three mechanisms:
 
 - [shinyapps.io](http://www.shinyapps.io/) (RStudio's hosting platform)
@@ -20,5 +21,6 @@ However, in some deployment environments using a reverse proxy may not be possib
 This approach does not resolve Shiny server open-source's use of an unencrypted web connection (it uses HTTP instead of HTTP**_S_**). A user password will be passed to the Shiny server in clear text, so anyone snooping on the web connection will be able to steal it.
 
 
+***
 ##### **WARNING AND DISCLAIMER:**
 **I am not a security professional. This app template provides an *extremely* mild form of access control that can be easily circumvented by a knowledgable adversary.**
