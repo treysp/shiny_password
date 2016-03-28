@@ -52,13 +52,13 @@ shinyServer(function(input, output, session) {
   #   1. checking whether their user name and password are in the credentials 
   #       data frame and on the same row (credentials are valid)
   #   2. if credentials are valid, retrieve their lockout status from the data frame
-  #   3. if user has failed to login too many times and is not currently locked out, 
+  #   3. if user has failed login too many times and is not currently locked out, 
   #       change locked out status to TRUE in credentials DF and save DF to file
   #   4. if user is not authenticated, determine whether the user name or the password 
   #       is bad (username precedent over pw) or he is locked out. set status value for
   #       error message code below
   observeEvent(input$login_button, {
-    # credentials <- readRDS("credentials/credentials.rds")
+    credentials <- readRDS("credentials/credentials.rds")
     
     row_username <- which(credentials$user == input$user_name)
     row_password <- which(credentials$pw == digest(input$password)) # digest() makes md5 hash of password
@@ -72,14 +72,20 @@ shinyServer(function(input, output, session) {
       user_input$user_locked_out <- credentials$locked_out[row_username]
     }
 
-    # if user is not currently locked out but has now failed login too many times,
-    #   set locked out status in credentials DF to TRUE and save DF
-    if (input$login_button > num_fails_to_lockout & 
+    # if user is not currently locked out but has now failed login too many times:
+    #   1. set current lockout status to TRUE
+    #   2. if username is present in credentials DF, set locked out status in 
+    #     credentials DF to TRUE and save DF
+    if (input$login_button == num_fails_to_lockout & 
         user_input$user_locked_out == FALSE) {
-      credentials$locked_out[row_username] <- TRUE
-      # saveRDS(credentials, "credentials/credentials.rds")
-      
+
       user_input$user_locked_out <- TRUE
+            
+      if (length(row_username) == 1) {
+        credentials$locked_out[row_username] <- TRUE
+        
+        saveRDS(credentials, "credentials/credentials.rds")
+      }
     }
       
     # if a user has valid credentials and is not locked out, he is authenticated      
