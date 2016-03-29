@@ -1,12 +1,21 @@
 # Code used to manage users and passwords
 
-# Function to create credentials directory and data frame on first usage
+#' Create credentials directory and empty data frame
+#'
+#' Creates the "credentials" directory inside the current working directory and 
+#'  creates an empty credentials.rds data frame that will contain user credentials. 
+#' @return This function is exclusively used for its side effects and returns TRUE invisibly 
+#'  if it executes successfully.
+#' @examples
+#' credentials_init()
 credentials_init <- function() {
-  if (!dir.exists("credentials/")) {
-    dir.create("credentials/")
-  }
-
-  if (!file.exists("credentials/credentials.rds")) {
+  if (file.exists("credentials/credentials.rds")) {
+    stop("Credentials file already exists.")
+  } else {
+    if (!dir.exists("credentials/")) {
+      dir.create("credentials/")
+    }
+    
     credentials <- data.frame(user = character(),
                               pw = character(),
                               locked_out = logical(),
@@ -14,9 +23,20 @@ credentials_init <- function() {
 
     saveRDS(credentials, "credentials/credentials.rds")
   }
+  invisible(TRUE)
 }  
   
-# Function to add a single user
+#' Add a single user to the credentials data frame
+#'
+#' Reads the credentials data frame, adds a single user, and saves the credentials data frame.
+#' @param user A character string
+#' @param pw A character string 
+#'
+#' @return This function is exclusively used for its side effects and returns TRUE invisibly 
+#'  if it executes successfully.
+#'
+#' @examples
+#' add_one_user("user1", "password1")
 add_one_user <- function(user, pw) {
   require(digest)
   
@@ -51,10 +71,24 @@ add_one_user <- function(user, pw) {
     stop("An entry in the credentials data frame is missing a password - please correct.")    
   }
   
-  saveRDS(credentials, "credentials/credentials.rds")    
+  saveRDS(credentials, "credentials/credentials.rds")
+  invisible(TRUE)
 }
 
-# Function to add multiple users
+#' Add multiple users to the credentials data frame
+#'
+#' Reads the credentials data frame, adds multiple users, and saves the credentials data frame. 
+#' The two input character vectors should contain pairs of user names and passwords in the same
+#' locations within the vectors. For example, the first user name in the user names vector will
+#' be paired with the first password in the passwords vector.
+#' @param users A character vector with no values of NA or ""
+#' @param pws A character vector with no values of NA or ""
+#'
+#' @return This function is exclusively used for its side effects and returns TRUE invisibly 
+#'  if it executes successfully.
+#'
+#' @examples
+#' add_multiple_users(c("user1", "user2"), c("password1", "password2"))
 add_multiple_users <- function(users, pws) {
   require(digest)
   
@@ -96,5 +130,6 @@ add_multiple_users <- function(users, pws) {
     stop("An entry in the credentials data frame is missing a password - please correct.")    
   }
   
-  saveRDS(credentials, "credentials/credentials.rds")    
+  saveRDS(credentials, "credentials/credentials.rds") 
+  invisible(TRUE)
 }
