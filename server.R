@@ -2,7 +2,7 @@ shinyServer(function(input, output, session) {
 #### UI code --------------------------------------------------------------
   output$ui <- renderUI({
     if (user_input$authenticated == FALSE) {
-      # Centered login interface
+      ##### UI code for login page
       fluidPage(
         fluidRow(
           column(width = 2, offset = 5,
@@ -13,6 +13,7 @@ shinyServer(function(input, output, session) {
         )
       )
     } else {
+      #### Your app's UI code goes here!
       fluidPage(
         fluidRow(
           # Slider input
@@ -30,7 +31,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-#### NON-PASSWORD server code -----------------------------------------------
+#### YOUR APP'S SERVER CODE GOES HERE ----------------------------------------
   # slider input widget
   output$obs <- renderUI({
     sliderInput("obs", "Number of observations:", 
@@ -43,7 +44,7 @@ shinyServer(function(input, output, session) {
     hist(rnorm(input$obs), main = "")
   })
     
-#### PASSWORD server code --------------------------------------------------__ 
+#### PASSWORD server code ---------------------------------------------------- 
   # reactive value containing user's authentication status
   user_input <- reactiveValues(authenticated = FALSE, valid_credentials = FALSE, 
                                user_locked_out = FALSE, status = "")
@@ -109,8 +110,8 @@ shinyServer(function(input, output, session) {
     }
   })   
 
-  # password entry UI componenets (displayed if user is not authenticated)
-  # username and password text fields, login button
+  # password entry UI componenets:
+  #   username and password text fields, login button
   output$uiLogin <- renderUI({
     wellPanel(
       textInput("user_name", "User Name:"),

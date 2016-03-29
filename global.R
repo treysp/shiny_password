@@ -15,7 +15,7 @@ library(digest)
     saveRDS(credentials, "credentials/credentials.rds")
   }
     
-############# CODE ABOVE FOR TESTING ONLY!!!
+############# CODE ABOVE FOR TESTING ONLY - DELETE before using app!!!
   
 # set the number of failed attempts allowed before user is locked out
 
