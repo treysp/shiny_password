@@ -22,7 +22,7 @@ This approach does not resolve Shiny server open-source's use of an unencrypted 
 
 ***
 
-#### Usage
+#### **Usage**
 
 
 This code is a template that can be used to add login functionality to any Shiny app. Users should place the code for their Shiny app in the appropriate locations in the template files.
