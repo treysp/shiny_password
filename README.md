@@ -40,10 +40,10 @@ The app owner may specify how many times a given user can attempt to log in befo
 The admin.R file contains functions that the app owner can use to manage the user credentials data. When the app is first deployed, the credentials_init() function should be called. It creates the "credentials" directory in the app's local directory and saves an empty credentials data frame with the correct structure there.
 
 
-The app owner may add one user to the credentials data by using the add_one_user() function or add multiple users by using the add_multiple_users() function. The former adds a single entry to the credentials data; the user name and password are submitted as character strings. The latter adds multiple entries to the credentials data - the user names and passwords are submitted as two character vectors, with each user name paired with the entry with the same index in the password vector.
+The app owner may add one more users by using the add_users() function. The user names and passwords are submitted as two character strings or character vectors, where each user name is paired with the entry with the same index in the password vector.
 
 
-The app owner may delete one user from the credentials data by using the delete_user() function with the user name specified - this function only deletes one user per call.
+The app owner may delete one or more users from the credentials data by using the delete_users() function with the user name(s) specified as a character string or a character vector.
 
 ***
 
