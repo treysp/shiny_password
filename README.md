@@ -17,7 +17,7 @@ The most secure method for accomplishing this with Shiny server open-source is t
 However, in some deployment environments using a reverse proxy may not be possible - this Shiny app template is designed for those scenarios. This app code conducts user authentication inside the Shiny app itself.
 
 
-This approach does not resolve Shiny server open-source's use of an unencrypted web connection (it uses HTTP instead of HTTP**S**). A user password will be passed to the Shiny server in clear text, so anyone snooping on the web connection will be able to steal it.
+This approach does not resolve Shiny server open-source's use of an unencrypted web connection (it uses HTTP instead of HTTP*S*). A user password will be passed to the Shiny server in clear text, so anyone snooping on the web connection will be able to steal it.
 
 
 ***
@@ -34,7 +34,7 @@ The login interface operates by wrapping the Shiny app's entire UI specification
 The login template manages user credentials by saving them in a persistent data frame local to the Shiny app. The data frame contains 3 elements for each user: user name, password, and lock out status. Each time an app user attempts to log in, the app reads the data frame and compares the submitted credentials to the data frame's set of valid credentials. Note: the passwords are stored as md5 hashes so they are not legible to someone who managed to access the credentials data frame - this likely means the app owner will have to assign a new password to a user who forgets his since it can't simply be recovered from the credentials data. 
 
 
-The app owner may specify how many times a given user can attempt to log in before he is locked out by adjusting the "num_fails_to_lockout" parameter in the global.R file. Once a user fails to log in that number of times, his/her lockout status is set to TRUE in the persistent credentials data frame. Thus, if he reconnects to the app in a new session he will still be locked out. If a user fails to login too many times without specifying a valid user name, the session is locked out (but if the user closed the connection and reconnected he could continue attempting to login).
+The app owner may specify how many times a given user can attempt to log in before he is locked out by adjusting the "num_fails_to_lockout" parameter in the global.R file. Once a user fails to log in that number of times, his/her lockout status is set to TRUE in the persistent credentials data frame. Thus, if he reconnects to the app in a new session he will still be locked out. If a user fails to login too many times without specifying a valid user name, the **session** is locked out but the user could continue attempting to login by closing and reopening the web page because he never specified a valid user name that can be locked out permanently.
 
 
 The admin.R file contains functions that the app owner can use to manage the user credentials data. When the app is first deployed, the credentials_init() function should be called. It creates the "credentials" directory in the app's local directory and saves an empty credentials data frame with the correct structure there.
