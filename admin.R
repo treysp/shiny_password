@@ -49,7 +49,7 @@ credentials_init <- function() {
 #' passwords_to_add <- c("password2", "password3")
 #' add_users(user_to_add, passwords_to_add)
 add_users <- function(users, pws) {
-  library(digest)
+  require(digest)
   
   # check inputs
   if (!is.character(users) || any(is.na(users)) || any(users == "")) {
