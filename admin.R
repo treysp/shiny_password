@@ -62,7 +62,7 @@ add_users <- function(users, pws) {
   if (length(users) != length(pws)) stop("You must have the same number of passwords as users.")
   
   # add users
-  credentials <- readRDS("credentials/credentials.RDS")
+  credentials <- readRDS("credentials/credentials.rds")
   
   if (any(credentials[, "user"] %in% users)) {
     dupe_users <- credentials[which(credentials[, "user"] %in% users), "user"]
@@ -115,7 +115,7 @@ delete_users <- function(users) {
   }
 
   # delete users
-  credentials <- readRDS("credentials/credentials.RDS")
+  credentials <- readRDS("credentials/credentials.rds")
   
   if (any(!(users %in% credentials[, "user"]))) {
     bad_users <- users[!(users %in% credentials[, "user"])]
