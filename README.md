@@ -1,14 +1,15 @@
 #### **Shiny Password: A simple (and not particularly secure) method for managing user access permissions in Shiny apps**
 
 
-RStudio's product Shiny allows users to easily build interactive web applications backed by an R session. Shiny applications can be served to end users via three mechanisms:
+RStudio's product Shiny allows users to easily build interactive web applications backed by an R session. Shiny applications can be served to end users via four mechanisms:
 
+- [ShinyProxy](https://www.shinyproxy.io/) (free and open source enterprise deployment of Shiny apps)
 - [shinyapps.io](http://www.shinyapps.io/) (RStudio's hosting platform)
 - [Shiny server open-source](https://www.rstudio.com/products/shiny/download-server/) (free and open source)
 - [Shiny Server Pro](https://www.rstudio.com/products/shiny-server-pro/)
 
 
-Both Shiny Server Pro and the highest two tiers of shinyapps.io allow administrators to set app-specific user access permissions. However, some users of shinyapps.io's lower tiers or Shiny server open-source may want to control app access as well.
+Both ShinyProxy, Shiny Server Pro and the highest two tiers of shinyapps.io allow administrators to set app-specific user access permissions. However, some users of shinyapps.io's lower tiers or Shiny server open-source may want to control app access as well.
 
 
 The most secure method for accomplishing this with Shiny server open-source is to [host the app behind a reverse proxy server](https://support.rstudio.com/hc/en-us/articles/213733868-Running-Shiny-Server-with-a-Proxy) that will manage web traffic to and from the Shiny server. The reverse proxy server can then use standard user access control tools such as [Auth0](https://auth0.com/blog/2015/09/24/adding-authentication-to-shiny-open-source-edition/) or [PAM](https://en.wikipedia.org/wiki/Pluggable_authentication_module).
