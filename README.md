@@ -29,7 +29,7 @@ This approach does not resolve Shiny server open-source's use of an unencrypted 
 This code is a template that can be used to add login functionality to any Shiny app. Users should place the code for their Shiny app in the appropriate locations in the template files.
 
 
-The login interface operates by wrapping the Shiny app's entire UI specification in a renderUI() function. By default, an app user will only see the login screen. When he successfully authenticates, the conditional UI is triggered and the app content appears. This means that **the entire UI specification code is written in the server.R file** (as compared to it normally residing in the ui.R file). Your app's UI code should be written starting on line 16 of the server.R file.
+The login interface operates by wrapping the Shiny app's entire UI specification in a `renderUI()` function. By default, an app user will only see the login screen. When he successfully authenticates, the conditional UI is triggered and the app content appears. This means that **the entire UI specification code is written in the server.R file** (as compared to it normally residing in the ui.R file). Your app's UI code should be written starting on line 16 of the server.R file.
 
 
 The login template manages user credentials by saving them in a persistent data frame local to the Shiny app. The data frame contains 3 elements for each user: user name, password, and lock out status. Each time an app user attempts to log in, the app reads the data frame and compares the submitted credentials to the data frame's set of valid credentials. Note: the passwords are stored as md5 hashes so they are not legible to someone who managed to access the credentials data frame - this likely means the app owner will have to assign a new password to a user who forgets his since it can't simply be recovered from the credentials data. 
@@ -41,10 +41,10 @@ The app owner may specify how many times a given user can attempt to log in befo
 The admin.R file contains functions that the app owner can use to manage the user credentials data. When the app is first deployed, the credentials_init() function should be called. It creates the "credentials" directory in the app's local directory and saves an empty credentials data frame with the correct structure there.
 
 
-The app owner may add one more users by using the add_users() function. The user names and passwords are submitted as two character strings or character vectors, where each user name is paired with the entry with the same index in the password vector.
+The app owner may add one more users by using the `add_users()` function. The user names and passwords are submitted as two character strings or character vectors, where each user name is paired with the entry with the same index in the password vector.
 
 
-The app owner may delete one or more users from the credentials data by using the delete_users() function with the user name(s) specified as a character string or a character vector.
+The app owner may delete one or more users from the credentials data by using the `delete_users()` function with the user name(s) specified as a character string or a character vector.
 
 ***
 
